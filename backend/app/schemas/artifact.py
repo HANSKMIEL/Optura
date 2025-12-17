@@ -5,6 +5,8 @@ from ..models.artifact import ArtifactStatus
 
 
 class ArtifactResponse(BaseModel):
+    model_config = {"from_attributes": True}
+    
     id: int
     task_id: int
     filename: str
@@ -16,9 +18,6 @@ class ArtifactResponse(BaseModel):
     status: ArtifactStatus
     verification_result: Optional[Dict[str, Any]]
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class ArtifactVerification(BaseModel):

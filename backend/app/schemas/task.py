@@ -35,6 +35,8 @@ class TaskUpdate(BaseModel):
 
 
 class TaskResponse(BaseModel):
+    model_config = {"from_attributes": True}
+    
     id: int
     project_id: int
     name: str
@@ -55,9 +57,6 @@ class TaskResponse(BaseModel):
     test_results: Optional[Dict[str, Any]]
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class TaskApproval(BaseModel):
