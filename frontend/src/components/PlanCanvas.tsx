@@ -41,14 +41,24 @@ const PlanCanvas = ({ projectId }: PlanCanvasProps) => {
       
       nodeDiv.classList.add(statusColors[node.status] || 'border-gray-300')
       
-      nodeDiv.innerHTML = `
-        <div class="text-sm font-semibold">${node.name}</div>
-        <div class="text-xs text-gray-600 mt-1">
-          Status: ${node.status}
-          ${node.estimate_hours ? ` | ${node.estimate_hours}h` : ''}
-        </div>
-        ${node.requires_approval ? '<div class="text-xs text-orange-600 mt-1">⚠️ Requires Approval</div>' : ''}
-      `
+      // Create elements safely without innerHTML to prevent XSS
+      const nameDiv = document.createElement('div')
+      nameDiv.className = 'text-sm font-semibold'
+      nameDiv.textContent = node.name
+      
+      const statusDiv = document.createElement('div')
+      statusDiv.className = 'text-xs text-gray-600 mt-1'
+      statusDiv.textContent = `Status: ${node.status}${node.estimate_hours ? ` | ${node.estimate_hours}h` : ''}`
+      
+      nodeDiv.appendChild(nameDiv)
+      nodeDiv.appendChild(statusDiv)
+      
+      if (node.requires_approval) {
+        const approvalDiv = document.createElement('div')
+        approvalDiv.className = 'text-xs text-orange-600 mt-1'
+        approvalDiv.textContent = '⚠️ Requires Approval'
+        nodeDiv.appendChild(approvalDiv)
+      }
       
       container.appendChild(nodeDiv)
       nodeElements.set(node.id, nodeDiv)
@@ -58,7 +68,11 @@ const PlanCanvas = ({ projectId }: PlanCanvasProps) => {
     if (graph.edges.length > 0) {
       const edgesDiv = document.createElement('div')
       edgesDiv.className = 'mt-4 p-3 bg-gray-50 rounded'
-      edgesDiv.innerHTML = '<div class="text-sm font-semibold mb-2">Dependencies:</div>'
+      
+      const edgesTitle = document.createElement('div')
+      edgesTitle.className = 'text-sm font-semibold mb-2'
+      edgesTitle.textContent = 'Dependencies:'
+      edgesDiv.appendChild(edgesTitle)
       
       const edgesList = document.createElement('ul')
       edgesList.className = 'text-xs text-gray-600 space-y-1'

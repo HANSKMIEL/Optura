@@ -56,6 +56,10 @@ async def upload_artifact(task_id: int, file: UploadFile = File(...), db: Sessio
     filename = f"{file_hash[:8]}_{safe_filename}"
     file_path = os.path.join(settings.upload_dir, filename)
 
+    # Validate path safety to prevent traversal attacks
+    if not FileValidator.validate_path_safety(settings.upload_dir, file_path):
+        raise HTTPException(status_code=400, detail="Invalid file path")
+
     # Save file
     try:
         async with aiofiles.open(file_path, 'wb') as f:

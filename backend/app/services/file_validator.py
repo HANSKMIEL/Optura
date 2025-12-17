@@ -25,10 +25,15 @@ class FileValidator:
         if ext.lower() not in settings.allowed_extensions:
             return False, f"File extension '{ext}' not allowed. Allowed: {', '.join(settings.allowed_extensions)}"
 
-        # Check filename for suspicious patterns
-        suspicious_patterns = ["../", "..\\", "/etc/", "c:\\", "~"]
+        # Check filename for suspicious patterns (including URL-encoded variations)
+        suspicious_patterns = [
+            "../", "..\\", "/etc/", "c:\\", "~",
+            "%2e%2e/", "%2e%2e\\", "%2f%65%74%63%2f",  # URL-encoded
+            "..%2f", "..%5c"  # Mixed encoding
+        ]
+        filename_lower = filename.lower()
         for pattern in suspicious_patterns:
-            if pattern in filename.lower():
+            if pattern in filename_lower:
                 return False, f"Suspicious pattern in filename: {pattern}"
 
         return True, ""
@@ -76,3 +81,19 @@ class FileValidator:
             filename = name + ext
 
         return filename
+
+    @staticmethod
+    def validate_path_safety(base_dir: str, file_path: str) -> bool:
+        """
+        Validate that file_path is within base_dir to prevent path traversal.
+        Returns True if safe, False otherwise.
+        """
+        try:
+            # Get absolute, normalized paths
+            base_real = os.path.realpath(base_dir)
+            file_real = os.path.realpath(file_path)
+            
+            # Check if file is within base directory
+            return os.path.commonpath([base_real, file_real]) == base_real
+        except (ValueError, OSError):
+            return False
