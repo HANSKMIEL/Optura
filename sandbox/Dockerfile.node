@@ -1,0 +1,14 @@
+FROM node:18-slim
+
+WORKDIR /workspace
+
+# Install jest globally
+RUN npm install -g jest@29.0.0
+
+# Security: Create non-root user
+RUN useradd -m -u 1000 sandbox && chown -R sandbox:sandbox /workspace
+
+USER sandbox
+
+# Default command
+CMD ["npm", "test"]

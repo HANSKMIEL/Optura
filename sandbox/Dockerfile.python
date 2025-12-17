@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /workspace
+
+# Install pytest and other testing tools
+RUN pip install --no-cache-dir pytest pytest-cov pytest-asyncio
+
+# Security: Create non-root user
+RUN useradd -m -u 1000 sandbox && chown -R sandbox:sandbox /workspace
+
+USER sandbox
+
+# Default command
+CMD ["python", "-m", "pytest", "/workspace", "-v"]
