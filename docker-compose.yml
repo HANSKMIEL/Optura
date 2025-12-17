@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - uploads:/app/uploads
+    environment:
+      - DATABASE_URL=sqlite:///./optura.db
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key}
+      - DEBUG=true
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - sandbox-python
+      - sandbox-node
+    networks:
+      - optura-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - optura-network
+
+  sandbox-python:
+    build:
+      context: ./sandbox
+      dockerfile: Dockerfile.python
+    volumes:
+      - sandbox-workdir:/workspace
+    networks:
+      - optura-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1'
+
+  sandbox-node:
+    build:
+      context: ./sandbox
+      dockerfile: Dockerfile.node
+    volumes:
+      - sandbox-workdir:/workspace
+    networks:
+      - optura-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1'
+
+volumes:
+  uploads:
+  sandbox-workdir:
+
+networks:
+  optura-network:
+    driver: bridge
