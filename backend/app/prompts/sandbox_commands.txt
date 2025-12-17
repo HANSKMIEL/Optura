@@ -1,0 +1,36 @@
+# Standard sandbox commands for Optura
+
+## Install dependencies
+pip install -r requirements.txt
+npm ci
+
+## Unit tests
+pytest tests/unit -q --maxfail=1 --junitxml=reports/unit.xml
+npm test -- --coverage --coverageReporters=json
+
+## Integration tests  
+pytest tests/integration -q --junitxml=reports/integration.xml
+
+## Static analysis
+mypy backend/app/ --ignore-missing-imports
+flake8 backend/app/ --max-line-length=120
+npx eslint src/ --format json
+
+## Security scans
+bandit -r backend/app/ -f json -o reports/bandit.json
+npm audit --json > reports/npm_audit.json
+pip-audit --format json > reports/pip_audit.json
+
+## Type checking
+mypy backend/app/ --strict
+npx tsc --noEmit
+
+## Collect artifacts
+# Store stdout/stderr, junit xml, and static/security reports in artifact store
+# Reports directory: reports/
+# Expected files:
+#   - reports/unit.xml
+#   - reports/integration.xml
+#   - reports/bandit.json
+#   - reports/npm_audit.json
+#   - reports/coverage.json

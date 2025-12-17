@@ -1,0 +1,58 @@
+# agent_rules.yaml - AI Agent Governance Configuration
+
+# Iteration limits
+max_auto_iterations: 3
+max_retries_on_failure: 2
+
+# Confidence thresholds
+min_confidence_for_auto_merge: 0.8
+min_confidence_for_execution: 0.5
+flag_for_review_below: 0.5
+
+# Security gates
+block_on_security_severity: high
+require_security_scan: true
+block_on_secrets_found: true
+
+# Human approval requirements
+require_human_for:
+  - production_deploy
+  - infra_change
+  - billing_change
+  - database_migration
+  - security_config_change
+  - api_breaking_change
+
+# Auto-approve conditions (all must be true)
+auto_approve_when:
+  - all_tests_pass
+  - no_security_issues
+  - confidence_above_threshold
+  - no_breaking_changes
+  - coverage_above_80
+
+# Sandbox configuration
+sandbox:
+  timeout_seconds: 300
+  memory_limit_mb: 512
+  network_access: false
+  allowed_commands:
+    - pytest
+    - npm test
+    - mypy
+    - flake8
+    - eslint
+    - bandit
+
+# Logging
+log_prompts: true
+log_responses: true
+redact_secrets: true
+
+# Escalation
+escalation:
+  on_repeated_failure: 2
+  on_low_confidence: 0.3
+  notify_channels:
+    - slack
+    - email
