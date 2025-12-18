@@ -33,6 +33,9 @@ auto_approve_when:
 
 # Sandbox configuration
 sandbox:
+  # Note: The default sandbox timeout in backend/app/config.py is 60 seconds.
+  # This configuration intentionally recommends a higher limit (300 seconds)
+  # for longer-running automated tasks.
   timeout_seconds: 300
   memory_limit_mb: 512
   network_access: false

@@ -104,10 +104,10 @@ Verwacht: volledige audit trail; approvals gelogd.
 Verwacht: totaal, pending, in_progress, completed, failed counts correct.
 
 ## 12 Governance checks
-- Controleer confidence thresholds in backend/app/config.py
+- Controleer confidence thresholds in backend/app/prompts/agent_rules.yaml
 - Controleer dat low confidence (<0.5) taken flagged worden voor review
 - Test rejection flow:
-  - curl -X POST http://localhost:8000/api/tasks/<task_id>/reject -H "Content-Type: application/json" -d '{"rejected_by": "reviewer@example.com", "reason": "Needs more tests"}'
+  - curl -X POST http://localhost:8000/api/tasks/<task_id>/reject -H "Content-Type: application/json" -d '{"rejected_by": "reviewer@example.com", "rejection_reason": "Needs more tests"}'
 
 ## 13 Eindacceptatie
 - Demo: intake → plan → generate-spec → upload artifact → run-tests → approve → complete

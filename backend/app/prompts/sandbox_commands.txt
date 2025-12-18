@@ -5,11 +5,15 @@ pip install -r requirements.txt
 npm ci
 
 ## Unit tests
+# Note: Current structure has tests directly in tests/ directory.
+# The commands below represent the intended future directory structure.
 pytest tests/unit -q --maxfail=1 --junitxml=reports/unit.xml
+# For current structure, use: pytest tests/ -q --maxfail=1 --junitxml=reports/unit.xml
 npm test -- --coverage --coverageReporters=json
 
 ## Integration tests  
 pytest tests/integration -q --junitxml=reports/integration.xml
+# For current structure, use: pytest tests/ -q --junitxml=reports/integration.xml
 
 ## Static analysis
 mypy backend/app/ --ignore-missing-imports
