@@ -13,4 +13,6 @@ networkx==3.2.1
 python-dotenv==1.0.0
 pytest==7.4.3
 pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+flake8==6.1.0
 docker==6.1.3
