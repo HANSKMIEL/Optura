@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from typing import List
+import warnings
 
 
 class Settings(BaseSettings):
@@ -34,6 +35,15 @@ class Settings(BaseSettings):
     
     class Config:
         env_file = ".env"
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if not self.debug and self.secret_key == "dev-secret-key-change-in-production":
+            warnings.warn(
+                "SECURITY WARNING: You are using the default secret key in production! "
+                "Please set a secure SECRET_KEY environment variable.",
+                RuntimeWarning
+            )
 
 
 settings = Settings()
