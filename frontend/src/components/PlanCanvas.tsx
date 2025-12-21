@@ -25,7 +25,7 @@ const PlanCanvas = ({ projectId }: PlanCanvasProps) => {
 
     // Create node elements
     const nodeElements = new Map<number, HTMLDivElement>()
-    graph.nodes.forEach((node, index) => {
+    graph.nodes.forEach((node) => {
       const nodeDiv = document.createElement('div')
       nodeDiv.className = 'inline-block bg-white border-2 rounded-lg p-3 m-2 shadow'
       
