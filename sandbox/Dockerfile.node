@@ -6,7 +6,7 @@ WORKDIR /workspace
 RUN npm install -g jest@29.0.0
 
 # Security: Create non-root user
-RUN id -u 1000 &>/dev/null && \
+RUN id -u 1000 >/dev/null 2>&1 && \
     usermod -l sandbox $(id -nu 1000) && \
     groupmod -n sandbox $(id -gn 1000) || \
     useradd -m -u 1000 sandbox; \
