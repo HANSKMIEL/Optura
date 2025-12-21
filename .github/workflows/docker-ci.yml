@@ -1,0 +1,33 @@
+name: Docker CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker images
+        run: docker compose build
+      - name: Start services
+        run: |
+          docker compose up -d backend
+          echo "Waiting for backend to be healthy..."
+          for i in {1..30}; do
+            if curl --fail --silent http://localhost:8000/health > /dev/null 2>&1; then
+              echo "Backend is healthy!"
+              exit 0
+            fi
+            echo "Attempt $i: Backend not ready yet, waiting..."
+            sleep 2
+          done
+          echo "Backend failed to become healthy within 60 seconds"
+          exit 1
+      - name: Stop services
+        run: docker compose down
