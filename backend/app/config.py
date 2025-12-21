@@ -42,7 +42,7 @@ class Settings(BaseSettings):
             warnings.warn(
                 "SECURITY WARNING: You are using the default secret key in production! "
                 "Please set a secure SECRET_KEY environment variable.",
-                RuntimeWarning
+                UserWarning
             )
 
 
