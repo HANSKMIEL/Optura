@@ -12,13 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker images
-        run: docker-compose build
+        run: docker compose build
       - name: Start services
         run: |
-          docker-compose up -d backend
+          docker compose up -d backend
           sleep 10
       - name: Health check
         run: |
           curl --fail http://localhost:8000/health || exit 1
       - name: Stop services
-        run: docker-compose down
+        run: docker compose down
